@@ -29,15 +29,14 @@ class NominatedMoviesCrawler:
     def scrap(self) -> None:
         self.nominated_movies: List[dict] = list()
         self.driver.get('https://www.scrapethissite.com/pages/ajax-javascript/')
-        year_links: list = reversed(self.driver.find_elements(By.CLASS_NAME, 'year-link')) # type: ignore
+        year_links: list = reversed(self.driver.find_elements(By.CLASS_NAME, 'year-link'))
         for year_link in year_links:
             year_link.click()
             self.scrap_year_movies(year_link=year_link)
         self.write_to_csv(data=self.nominated_movies)
                 
     def scrap_year_movies(self, year_link: WebElement) -> None:
-        
-        movie_table: WebElement = webdriver_wait(driver=self.driver, timeout=3).until(       # type: ignore
+        movie_table: WebElement = webdriver_wait(driver=self.driver, timeout=3).until(
             EC.visibility_of_element_located((By.ID, 'table-body'))
         )
         for movie in movie_table.find_elements(By.CLASS_NAME, 'film'):
@@ -54,6 +53,15 @@ class NominatedMoviesCrawler:
         self.writer.writerows(data)
     
     def get_csv_filename(self, csv_filename: Optional[str]) -> str:
+        """[summary]
+            Check if csv_filename was provided.
+            
+        Args:
+            csv_filename (Optional[str]): 
+
+        Returns:
+            str: csv_filename
+        """
         if csv_filename:
             if csv_filename.endswith('.csv'):
                 return csv_filename
@@ -65,8 +73,3 @@ class NominatedMoviesCrawler:
     def __del__(self):
         self.driver.close()
         self.csvfile.close()
-
-
-if __name__ == '__main__':
-    crawler: NominatedMoviesCrawler = NominatedMoviesCrawler()
-    crawler.scrap()
