@@ -1,4 +1,5 @@
 from typing import Type
+from dataclasses import dataclass
 
 from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
@@ -9,6 +10,13 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 def webdriver_wait(driver: Type[WebDriver], timeout: int) -> WebDriverWait:
     return WebDriverWait(driver=driver, timeout=timeout)
+
+
+@dataclass
+class NominatedMovie:
+    title: str
+    nominations: int
+    awards: int
 
 
 class MainCrawler:
